@@ -6,7 +6,7 @@ create domain auth.phone as text check ( VALUE ~ '^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.
 
 create table if not exists auth.users
 (
-    id                 uuid                     not null unique default gen_random_uuid(),
+    id                 bigint                   not null unique,
 
     phone              auth.phone               null unique,
     email              varchar(255)             null unique,
@@ -17,20 +17,20 @@ create table if not exists auth.users
     meta_first_name    varchar(50)              null,
     meta_last_name     varchar(50)              null,
     meta_birthdate     date                     null,
-    meta_extra         jsonb                    not null        default '{}',
+    meta_extra         jsonb                    not null default '{}',
 
     created_at         timestamp with time zone not null,
     updated_at         timestamp with time zone not null,
 
-    last_sign_in       timestamp with time zone null            default null
+    last_sign_in       timestamp with time zone null     default null
 );
 create index if not exists users_id_email_index ON auth.users using brin (id);
 create index if not exists users_id_username_index ON auth.users using brin (username);
 
 create table if not exists auth.refresh_tokens
 (
-    id         bigserial                not null,
-    user_id    uuid                     null,
+    id         bigint                   not null,
+    user_id    bigint                   null,
 
     token      varchar(255)             null,
     revoked    bool                     not null default false,
@@ -46,8 +46,8 @@ create index if not exists refresh_tokens_token_index on auth.refresh_tokens usi
 
 create table if not exists auth.identities
 (
-    id            uuid                     not null unique default gen_random_uuid(),
-    user_id       uuid                     not null,
+    id            bigint                   not null unique,
+    user_id       bigint                   not null,
 
     data          jsonb                    not null,
 
@@ -57,7 +57,7 @@ create table if not exists auth.identities
 
     created_at    timestamp with time zone not null,
     updated_at    timestamp with time zone not null,
-    last_sign_in  timestamp with time zone null            default null,
+    last_sign_in  timestamp with time zone null default null,
 
     constraint identities_pkey primary key (id)
 );

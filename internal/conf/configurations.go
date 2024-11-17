@@ -49,12 +49,18 @@ type SurgeCookieConfigurations struct {
 	Duration int    `json:"duration"`
 }
 
+type SurgeSnowflakeConfigurations struct {
+	StartTime string `split_words:"true"`
+	MachineID int64  `envconfig:"MACHINE_ID"`
+}
+
 type SurgeConfigurations struct {
-	Auth     SurgeAuthenticateConfigurations
-	JWT      SurgeJWTConfigurations
-	Cookie   SurgeCookieConfigurations
-	Database SurgeDatabaseConfigurations `required:"true"`
-	External SurgeExternalConfigurations
+	Snowflake SurgeSnowflakeConfigurations
+	Auth      SurgeAuthenticateConfigurations
+	JWT       SurgeJWTConfigurations
+	Cookie    SurgeCookieConfigurations
+	Database  SurgeDatabaseConfigurations `required:"true"`
+	External  SurgeExternalConfigurations
 
 	ServiceURL string `required:"true" split_words:"true"`
 	Host       string `default:"0.0.0.0:3000"`

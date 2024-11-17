@@ -8,13 +8,11 @@ import (
 	"database/sql"
 	"encoding/json"
 	"time"
-
-	"github.com/google/uuid"
 )
 
 type AuthIdentity struct {
-	ID           uuid.UUID
-	UserID       uuid.UUID
+	ID           int64
+	UserID       int64
 	Data         json.RawMessage
 	Provider     string
 	ProviderID   string
@@ -26,7 +24,7 @@ type AuthIdentity struct {
 
 type AuthRefreshToken struct {
 	ID        int64
-	UserID    uuid.NullUUID
+	UserID    sql.NullInt64
 	Token     sql.NullString
 	Revoked   bool
 	CreatedAt time.Time
@@ -34,7 +32,7 @@ type AuthRefreshToken struct {
 }
 
 type AuthUser struct {
-	ID                uuid.UUID
+	ID                int64
 	Phone             interface{}
 	Email             sql.NullString
 	Username          sql.NullString

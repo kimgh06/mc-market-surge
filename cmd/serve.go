@@ -31,6 +31,8 @@ func handleServeCommand(cmd *cobra.Command, args []string) error {
 		logrus.Debugln("Enabled debugging")
 	}
 
+	api.InitSnowflake(&config.Snowflake)
+
 	surgeAPI := api.NewSurgeAPI(config)
 	defer surgeAPI.CloseDatabaseConnection()
 

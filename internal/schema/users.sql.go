@@ -10,12 +10,11 @@ import (
 	"database/sql"
 	"encoding/json"
 
-	"github.com/google/uuid"
 	"github.com/sqlc-dev/pqtype"
 )
 
 const createUser = `-- name: CreateUser :one
-insert into auth.users(phone, email, username, encrypted_password, meta_avatar, meta_first_name, meta_last_name,
+insert into auth.users(id, phone, email, username, encrypted_password, meta_avatar, meta_first_name, meta_last_name,
                        meta_birthdate,
                        meta_extra, created_at, updated_at)
 values ($1,
@@ -27,12 +26,14 @@ values ($1,
         $7,
         $8,
         $9,
+        $10,
         now(),
         now())
 returning id, phone, email, username, encrypted_password, meta_avatar, meta_first_name, meta_last_name, meta_birthdate, meta_extra, created_at, updated_at, last_sign_in
 `
 
 type CreateUserParams struct {
+	ID                int64
 	Phone             interface{}
 	Email             sql.NullString
 	Username          sql.NullString
@@ -46,6 +47,7 @@ type CreateUserParams struct {
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (*AuthUser, error) {
 	row := q.db.QueryRowContext(ctx, createUser,
+		arg.ID,
 		arg.Phone,
 		arg.Email,
 		arg.Username,
@@ -81,7 +83,7 @@ from auth.users
 where id = $1
 `
 
-func (q *Queries) GetUser(ctx context.Context, id uuid.UUID) (*AuthUser, error) {
+func (q *Queries) GetUser(ctx context.Context, id int64) (*AuthUser, error) {
 	row := q.db.QueryRowContext(ctx, getUser, id)
 	var i AuthUser
 	err := row.Scan(
@@ -197,7 +199,7 @@ returning id, phone, email, username, encrypted_password, meta_avatar, meta_firs
 `
 
 type UpdateUserParams struct {
-	ID                uuid.UUID
+	ID                int64
 	Email             sql.NullString
 	Username          sql.NullString
 	EncryptedPassword sql.NullString
@@ -241,7 +243,7 @@ where id = $1
 returning id, phone, email, username, encrypted_password, meta_avatar, meta_first_name, meta_last_name, meta_birthdate, meta_extra, created_at, updated_at, last_sign_in
 `
 
-func (q *Queries) UpdateUserLastSignIn(ctx context.Context, id uuid.UUID) (*AuthUser, error) {
+func (q *Queries) UpdateUserLastSignIn(ctx context.Context, id int64) (*AuthUser, error) {
 	row := q.db.QueryRowContext(ctx, updateUserLastSignIn, id)
 	var i AuthUser
 	err := row.Scan(
@@ -274,7 +276,7 @@ returning id, phone, email, username, encrypted_password, meta_avatar, meta_firs
 `
 
 type UpdateUserMetadataParams struct {
-	ID            uuid.UUID
+	ID            int64
 	MetaAvatar    sql.NullString
 	MetaFirstName sql.NullString
 	MetaLastName  sql.NullString

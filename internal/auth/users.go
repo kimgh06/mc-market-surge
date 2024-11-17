@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/go-playground/validator/v10"
+	"github.com/godruoyi/go-snowflake"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
 	"surge/internal/api/provider"
@@ -97,6 +98,7 @@ func CreateUser(queries *schema.Queries, ctx context.Context, config *conf.Surge
 	}
 
 	result, err := queries.CreateUser(ctx, schema.CreateUserParams{
+		ID:                int64(snowflake.ID()),
 		Phone:             storage.NewNullableString(options.Phone),
 		Email:             storage.NewNullableString(options.Email),
 		Username:          storage.NewNullableString(options.Username),
@@ -129,6 +131,7 @@ func CreateUserAndIdentity(queries *schema.Queries, ctx context.Context, options
 	avatarUrl := options.ProviderData.Claims.Picture
 
 	user, err := queries.CreateUser(ctx, schema.CreateUserParams{
+		ID:            int64(snowflake.ID()),
 		MetaFirstName: sql.NullString{String: firstName, Valid: firstName != ""},
 		MetaLastName:  sql.NullString{String: lastName, Valid: lastName != ""},
 		MetaAvatar:    sql.NullString{String: avatarUrl, Valid: avatarUrl != ""},

@@ -8,24 +8,28 @@ package schema
 import (
 	"context"
 	"database/sql"
-
-	"github.com/google/uuid"
 )
 
 const createRefreshToken = `-- name: CreateRefreshToken :one
-insert into auth.refresh_tokens(user_id, token, revoked, created_at, updated_at)
-values ($1, $2, $3, now(), now())
+insert into auth.refresh_tokens(id, user_id, token, revoked, created_at, updated_at)
+values ($1, $2, $3, $4, now(), now())
 returning id, user_id, token, revoked, created_at, updated_at
 `
 
 type CreateRefreshTokenParams struct {
-	UserID  uuid.NullUUID
+	ID      int64
+	UserID  sql.NullInt64
 	Token   sql.NullString
 	Revoked bool
 }
 
 func (q *Queries) CreateRefreshToken(ctx context.Context, arg CreateRefreshTokenParams) (*AuthRefreshToken, error) {
-	row := q.db.QueryRowContext(ctx, createRefreshToken, arg.UserID, arg.Token, arg.Revoked)
+	row := q.db.QueryRowContext(ctx, createRefreshToken,
+		arg.ID,
+		arg.UserID,
+		arg.Token,
+		arg.Revoked,
+	)
 	var i AuthRefreshToken
 	err := row.Scan(
 		&i.ID,
@@ -41,7 +45,8 @@ func (q *Queries) CreateRefreshToken(ctx context.Context, arg CreateRefreshToken
 const getRefreshToken = `-- name: GetRefreshToken :one
 select id, user_id, token, revoked, created_at, updated_at
 from auth.refresh_tokens
-where token = $1::varchar and revoked = false
+where token = $1::varchar
+  and revoked = false
 `
 
 func (q *Queries) GetRefreshToken(ctx context.Context, token string) (*AuthRefreshToken, error) {
@@ -64,7 +69,7 @@ from auth.refresh_tokens
 where user_id = $1
 `
 
-func (q *Queries) ListRefreshTokenByUser(ctx context.Context, userID uuid.NullUUID) ([]*AuthRefreshToken, error) {
+func (q *Queries) ListRefreshTokenByUser(ctx context.Context, userID sql.NullInt64) ([]*AuthRefreshToken, error) {
 	rows, err := q.db.QueryContext(ctx, listRefreshTokenByUser, userID)
 	if err != nil {
 		return nil, err
@@ -111,7 +116,7 @@ set revoked = true
 where user_id = $1
 `
 
-func (q *Queries) RevokeRefreshTokensOfUser(ctx context.Context, userID uuid.NullUUID) error {
+func (q *Queries) RevokeRefreshTokensOfUser(ctx context.Context, userID sql.NullInt64) error {
 	_, err := q.db.ExecContext(ctx, revokeRefreshTokensOfUser, userID)
 	return err
 }

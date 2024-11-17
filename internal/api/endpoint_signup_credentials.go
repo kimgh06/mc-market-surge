@@ -41,15 +41,21 @@ func (a *SurgeAPI) EndpointSignUpWithCredentials(w http.ResponseWriter, r *http.
 	if err != nil {
 		switch {
 		case errors.Is(auth.ErrMissingField, err):
+			fallthrough
 		case errors.Is(auth.ErrRequiredUsername, err):
+			fallthrough
 		case errors.Is(auth.ErrRequiredEmail, err):
 			return BadRequestError(ErrorCodeMissingField, err.Error())
 		case errors.Is(auth.ErrInvalidEmail, err):
+			fallthrough
 		case errors.Is(auth.ErrInvalidUsername, err):
+			fallthrough
 		case errors.Is(auth.ErrInvalidPassword, err):
 			return BadRequestError(ErrorCodeInvalidField, err.Error())
 		case errors.Is(auth.ErrDuplicateEmail, err):
+			fallthrough
 		case errors.Is(auth.ErrDuplicateUsername, err):
+			fallthrough
 		case errors.Is(auth.ErrDuplicatePhone, err):
 			return ConflictError(err.Error())
 		case errors.Is(auth.ErrDatabaseJob, err):
@@ -74,7 +80,7 @@ func (a *SurgeAPI) EndpointSignUpWithCredentials(w http.ResponseWriter, r *http.
 			return httpErr
 		}
 
-		return InternalServerError("unknown error during creating user")
+		return InternalServerError("unknown error during creating user: %+v", err)
 	}
 
 	return writeResponseJSON(w, http.StatusOK, NewUserResponse(createdUser))

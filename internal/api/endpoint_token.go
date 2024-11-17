@@ -4,10 +4,11 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"github.com/godruoyi/go-snowflake"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 	"net/http"
+	"strconv"
 	"surge/internal/auth"
 	"surge/internal/conf"
 	"surge/internal/schema"
@@ -22,12 +23,13 @@ type AccessTokenClaims struct {
 	Username *string `json:"username"`
 }
 
-func (c AccessTokenClaims) GetSubjectUUID() (uuid.UUID, error) {
+func (c AccessTokenClaims) GetSubjectID() (sql.NullInt64, error) {
 	subject, err := c.GetSubject()
 	if err != nil {
-		return uuid.Nil, err
+		return sql.NullInt64{Valid: false}, err
 	}
-	return uuid.Parse(subject)
+	parsed, err := strconv.ParseInt(subject, 10, 64)
+	return sql.NullInt64{Int64: parsed, Valid: err == nil}, err
 }
 
 type TokenGrantType = string
@@ -134,7 +136,7 @@ func (a *SurgeAPI) tokenRefreshGrantFlow(w http.ResponseWriter, r *http.Request)
 		return ForbiddenError(ErrorCodeRefreshTokenRevoked, "refresh token was revoked")
 	}
 
-	user, err := a.queries.GetUser(r.Context(), refreshToken.UserID.UUID)
+	user, err := a.queries.GetUser(r.Context(), refreshToken.UserID.Int64)
 	if err != nil {
 		return err
 	}
@@ -172,7 +174,7 @@ func (a *SurgeAPI) issueToken(ctx context.Context, user *schema.AuthUser) (*Acce
 	}
 	refreshToken, err := a.generateRefreshToken(ctx, a.queries, user)
 	if err != nil {
-		return nil, InternalServerError("failed to create refresh accessToken")
+		return nil, InternalServerError("failed to create refresh accessToken: %+v", err)
 	}
 
 	return &AccessTokenResponse{
@@ -188,7 +190,8 @@ func (a *SurgeAPI) generateRefreshToken(ctx context.Context, q *schema.Queries, 
 	logger := logrus.WithContext(ctx).WithField("user", user.ID)
 
 	token, err := q.CreateRefreshToken(ctx, schema.CreateRefreshTokenParams{
-		UserID:  uuid.NullUUID{UUID: user.ID, Valid: user != nil},
+		ID:      int64(snowflake.ID()),
+		UserID:  sql.NullInt64{Int64: user.ID, Valid: user != nil},
 		Token:   storage.NewString(utilities.SecureToken()),
 		Revoked: false,
 	})
@@ -209,7 +212,7 @@ func (a *SurgeAPI) generateAccessToken(user *schema.AuthUser) (string, int64, er
 
 	claims := AccessTokenClaims{
 		RegisteredClaims: jwt.RegisteredClaims{
-			Subject:   user.ID.String(),
+			Subject:   strconv.FormatInt(user.ID, 10),
 			IssuedAt:  jwt.NewNumericDate(issuedAt),
 			ExpiresAt: jwt.NewNumericDate(expiresAt),
 		},

@@ -1,5 +1,5 @@
 -- name: CreateUser :one
-insert into auth.users(phone, email, username, encrypted_password, meta_avatar, meta_first_name, meta_last_name,
+insert into auth.users(id, phone, email, username, encrypted_password, meta_avatar, meta_first_name, meta_last_name,
                        meta_birthdate,
                        meta_extra, created_at, updated_at)
 values ($1,
@@ -11,6 +11,7 @@ values ($1,
         $7,
         $8,
         $9,
+        $10,
         now(),
         now())
 returning *;

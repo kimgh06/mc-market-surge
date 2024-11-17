@@ -10,7 +10,6 @@ import (
 	"database/sql"
 	"encoding/json"
 
-	"github.com/google/uuid"
 	"github.com/sqlc-dev/pqtype"
 )
 
@@ -21,7 +20,7 @@ RETURNING id, user_id, data, provider, provider_id, provider_data, created_at, u
 `
 
 type CreateIdentityWithUserParams struct {
-	UserID       uuid.UUID
+	UserID       int64
 	Provider     string
 	ProviderID   string
 	ProviderData json.RawMessage
@@ -55,7 +54,7 @@ from auth.identities
 WHERE user_id = $1
 `
 
-func (q *Queries) GetIdentitiesByUser(ctx context.Context, userID uuid.UUID) ([]*AuthIdentity, error) {
+func (q *Queries) GetIdentitiesByUser(ctx context.Context, userID int64) ([]*AuthIdentity, error) {
 	rows, err := q.db.QueryContext(ctx, getIdentitiesByUser, userID)
 	if err != nil {
 		return nil, err
@@ -123,7 +122,7 @@ from auth.identities
 WHERE id = $1
 `
 
-func (q *Queries) GetIdentityById(ctx context.Context, id uuid.UUID) (*AuthIdentity, error) {
+func (q *Queries) GetIdentityById(ctx context.Context, id int64) (*AuthIdentity, error) {
 	row := q.db.QueryRowContext(ctx, getIdentityById, id)
 	var i AuthIdentity
 	err := row.Scan(
@@ -153,7 +152,7 @@ RETURNING id, user_id, data, provider, provider_id, provider_data, created_at, u
 `
 
 type UpdateIdentityParams struct {
-	ID           uuid.UUID
+	ID           int64
 	CreatedAt    sql.NullTime
 	ProviderData pqtype.NullRawMessage
 	ProviderID   sql.NullString
@@ -193,7 +192,7 @@ WHERE id = $1
 RETURNING id, user_id, data, provider, provider_id, provider_data, created_at, updated_at, last_sign_in
 `
 
-func (q *Queries) UpdateIdentityLastSignIn(ctx context.Context, id uuid.UUID) (*AuthIdentity, error) {
+func (q *Queries) UpdateIdentityLastSignIn(ctx context.Context, id int64) (*AuthIdentity, error) {
 	row := q.db.QueryRowContext(ctx, updateIdentityLastSignIn, id)
 	var i AuthIdentity
 	err := row.Scan(

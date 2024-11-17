@@ -1,7 +1,6 @@
 package api
 
 import (
-	"github.com/google/uuid"
 	"github.com/lestrrat-go/jwx/v2/jwk"
 	"net/url"
 	"strconv"
@@ -31,7 +30,7 @@ func (r *AccessTokenResponse) MakeRedirectUrl(redirectURL string, extraParams ur
 }
 
 type UserResponse struct {
-	ID uuid.UUID `json:"id"`
+	ID uint64 `json:"id"`
 
 	Email    *string `json:"email"`
 	Username *string `json:"username"`
@@ -43,7 +42,7 @@ type UserResponse struct {
 
 func NewUserResponse(user *schema.AuthUser) *UserResponse {
 	return &UserResponse{
-		ID:         user.ID,
+		ID:         uint64(user.ID),
 		Email:      storage.NullStringToPointer(user.Email),
 		Username:   storage.NullStringToPointer(user.Username),
 		CreatedAt:  user.CreatedAt,

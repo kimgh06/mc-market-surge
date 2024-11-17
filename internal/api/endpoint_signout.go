@@ -2,7 +2,6 @@ package api
 
 import (
 	"database/sql"
-	"github.com/google/uuid"
 	"net/http"
 	"surge/internal/schema"
 )
@@ -36,13 +35,13 @@ func (a *SurgeAPI) EndpointSignOut(w http.ResponseWriter, r *http.Request) error
 	//}
 
 	c := getClaims(ctx)
-	userId, err := c.GetSubjectUUID()
+	userId, err := c.GetSubjectID()
 	if err != nil {
 		return err
 	}
 
 	err = a.Transaction(ctx, func(tx *sql.Tx, queries *schema.Queries) error {
-		return queries.RevokeRefreshTokensOfUser(ctx, uuid.NullUUID{UUID: userId, Valid: true})
+		return queries.RevokeRefreshTokensOfUser(ctx, userId)
 	})
 	if err != nil {
 		return InternalServerError("Error logging out user: %+v", err)

@@ -3,8 +3,8 @@ package api
 import (
 	"database/sql"
 	"errors"
-	"github.com/google/uuid"
 	"net/http"
+	"strconv"
 )
 
 // EndpointUser returns user data from logged in session
@@ -18,7 +18,7 @@ func (a *SurgeAPI) EndpointUser(w http.ResponseWriter, r *http.Request) error {
 		return BadRequestError(ErrorCodeBadJWT, "token subject is empty or undefined")
 	}
 
-	userId, err := uuid.Parse(claims.Subject)
+	userId, err := strconv.ParseInt(claims.Subject, 10, 64)
 	if err != nil {
 		return BadRequestError(ErrorCodeBadJWT, "token subject is not a uuid")
 	}

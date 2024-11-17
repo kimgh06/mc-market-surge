@@ -6,7 +6,6 @@ import (
 	"errors"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
 	"net/http"
@@ -216,7 +215,7 @@ func (a *SurgeAPI) loadExternalStateToContext(ctx context.Context, state string)
 		ctx = context.WithValue(ctx, contextExternalReferrerKey, claims.Referrer)
 	}
 	if claims.LinkingTargetID != "" {
-		linkingTargetUserID, err := uuid.Parse(claims.LinkingTargetID)
+		linkingTargetUserID, err := strconv.ParseInt(claims.LinkingTargetID, 10, 64)
 		if err != nil {
 			return nil, BadRequestError(ErrorCodeBadOAuth2State, "OAuth callback with invalid state (linking_target_id must be UUID)")
 		}
