@@ -10,9 +10,10 @@ const (
 	ErrorCodeUnexpectedFailure ErrorCode = "unexpected_failure"
 	ErrorCodeDatabaseFailure   ErrorCode = "database_failure"
 
-	ErrorCodeInvalidJSON  ErrorCode = "invalid_json"
-	ErrorCodeMissingField ErrorCode = "missing_field"
-	ErrorCodeInvalidField ErrorCode = "invalid_field"
+	ErrorCodeInvalidJSON     ErrorCode = "invalid_json"
+	ErrorCodeMissingField    ErrorCode = "missing_field"
+	ErrorCodeInvalidField    ErrorCode = "invalid_field"
+	ErrorCodeInvalidUsername ErrorCode = "invalid_username"
 
 	ErrorCodeInvalidCredentials ErrorCode = "invalid_credentials"
 

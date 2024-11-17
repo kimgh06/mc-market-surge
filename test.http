@@ -1,19 +1,18 @@
 ### Health Check
-GET http://localhost:3000/health
+GET http://localhost:4918/health
 
 
 ### Sign Up
-POST http://localhost:3000/v1/sign_up/credentials
+POST http://localhost:4918/v1/sign_up/credentials
 Content-Type: application/json
 
 {
   "username": "testuser",
-  "email": "test@example.com",
   "password": "secretpassword"
 }
 
 ### Acquire Token
-POST http://localhost:3000/v1/token?grant_type=credentials
+POST http://localhost:4918/v1/token?grant_type=credentials
 Content-Type: application/json
 
 {
@@ -27,12 +26,15 @@ Content-Type: application/json
 %}
 
 ### Get user data
-GET http://localhost:3000/v1/user
+GET http://localhost:4918/v1/user
 Authorization: Bearer {{access_token}}
 
 ### Get External OAuth2 Url
-GET http://localhost:3000/v1/external?no_redirect=true&provider=google
+GET http://localhost:4918/v1/external?no_redirect=true&provider=google
 Referer: https://google.com
 
 ### Redirect To External OAuth2 Url
-GET http://localhost:3000/v1/external
+GET http://localhost:4918/v1/external
+
+### Check if username is available
+GET http://localhost:4918/v1/username/testusera
