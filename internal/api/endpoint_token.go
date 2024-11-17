@@ -28,8 +28,8 @@ func (c AccessTokenClaims) GetSubjectID() (sql.NullInt64, error) {
 	if err != nil {
 		return sql.NullInt64{Valid: false}, err
 	}
-	parsed, err := strconv.ParseInt(subject, 10, 64)
-	return sql.NullInt64{Int64: parsed, Valid: err == nil}, err
+	parsed, err := strconv.ParseUint(subject, 10, 64)
+	return sql.NullInt64{Int64: int64(parsed), Valid: err == nil}, err
 }
 
 type TokenGrantType = string

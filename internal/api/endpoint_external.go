@@ -215,11 +215,11 @@ func (a *SurgeAPI) loadExternalStateToContext(ctx context.Context, state string)
 		ctx = context.WithValue(ctx, contextExternalReferrerKey, claims.Referrer)
 	}
 	if claims.LinkingTargetID != "" {
-		linkingTargetUserID, err := strconv.ParseInt(claims.LinkingTargetID, 10, 64)
+		linkingTargetUserID, err := strconv.ParseUint(claims.LinkingTargetID, 10, 64)
 		if err != nil {
 			return nil, BadRequestError(ErrorCodeBadOAuth2State, "OAuth callback with invalid state (linking_target_id must be UUID)")
 		}
-		u, err := a.queries.GetUser(ctx, linkingTargetUserID)
+		u, err := a.queries.GetUser(ctx, int64(linkingTargetUserID))
 		if err != nil {
 			if errors.Is(sql.ErrNoRows, err) {
 				return nil, UnprocessableEntityError(ErrorCodeUserNotFound, "Linking target user not found")
