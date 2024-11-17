@@ -79,21 +79,25 @@ func CreateUser(queries *schema.Queries, ctx context.Context, config *conf.Surge
 		return nil, err
 	}
 
-	if _, err := queries.GetUserByEmail(ctx, *options.Email); options.Email != nil {
-		if err == nil {
-			return nil, ErrDuplicateEmail
-		}
-		if !errors.Is(err, sql.ErrNoRows) {
-			return nil, ErrDatabaseJob
+	if options.Email != nil {
+		if _, err := queries.GetUserByEmail(ctx, *options.Email); options.Email != nil {
+			if err == nil {
+				return nil, ErrDuplicateEmail
+			}
+			if !errors.Is(err, sql.ErrNoRows) {
+				return nil, ErrDatabaseJob
+			}
 		}
 	}
 
-	if _, err := queries.GetUserByUsername(ctx, *options.Username); options.Email != nil {
-		if err == nil {
-			return nil, ErrDuplicateUsername
-		}
-		if !errors.Is(err, sql.ErrNoRows) {
-			return nil, ErrDuplicatePhone
+	if options.Username != nil {
+		if _, err := queries.GetUserByUsername(ctx, *options.Username); options.Email != nil {
+			if err == nil {
+				return nil, ErrDuplicateUsername
+			}
+			if !errors.Is(err, sql.ErrNoRows) {
+				return nil, ErrDuplicatePhone
+			}
 		}
 	}
 
