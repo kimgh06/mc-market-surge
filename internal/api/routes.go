@@ -60,7 +60,7 @@ func (a *SurgeAPI) createRouter() *SurgeAPIRouter {
 			// TODO: Add update user route (POST|PUT /user)
 		})
 
-		router.Get("/username/{username}", a.EndpointUsername)
+		router.Get("/username/{username}/", a.EndpointUsername)
 	})
 
 	totalRouteNodes, totalRouteEndpoints := router.CountNodes()
