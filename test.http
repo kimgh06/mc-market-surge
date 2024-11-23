@@ -5,6 +5,7 @@ GET http://localhost:4918/health
 ### Sign Up
 POST http://localhost:4918/v1/sign_up/credentials
 Content-Type: application/json
+Surge-Service-Key: ASDF
 
 {
   "username": "testuser",

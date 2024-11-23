@@ -54,13 +54,19 @@ type SurgeSnowflakeConfigurations struct {
 	MachineID int64  `envconfig:"MACHINE_ID"`
 }
 
+type SurgeServiceKeyConfigurations struct {
+	Value          string
+	RequiredSignUp bool `split_words:"true"`
+}
+
 type SurgeConfigurations struct {
-	Snowflake SurgeSnowflakeConfigurations
-	Auth      SurgeAuthenticateConfigurations
-	JWT       SurgeJWTConfigurations
-	Cookie    SurgeCookieConfigurations
-	Database  SurgeDatabaseConfigurations `required:"true"`
-	External  SurgeExternalConfigurations
+	Snowflake  SurgeSnowflakeConfigurations
+	Auth       SurgeAuthenticateConfigurations
+	JWT        SurgeJWTConfigurations
+	Cookie     SurgeCookieConfigurations
+	Database   SurgeDatabaseConfigurations `required:"true"`
+	External   SurgeExternalConfigurations
+	ServiceKey SurgeServiceKeyConfigurations `split_words:"true"`
 
 	ServiceURL string `required:"true" split_words:"true"`
 	Host       string `default:"0.0.0.0:3000"`

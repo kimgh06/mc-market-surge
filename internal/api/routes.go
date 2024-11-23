@@ -33,6 +33,9 @@ func (a *SurgeAPI) createRouter() *SurgeAPIRouter {
 
 	router.Route("/v1", func(router *SurgeAPIRouter) {
 		router.Route("/sign_up", func(router *SurgeAPIRouter) {
+			if a.config.ServiceKey.RequiredSignUp {
+				router.Use(a.requireServiceKey)
+			}
 			router.Post("/credentials", a.EndpointSignUpWithCredentials)
 		})
 

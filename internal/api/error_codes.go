@@ -34,8 +34,9 @@ const (
 	ErrorCodeRefreshNotFoundToken ErrorCode = "refresh_token_not_found"
 	ErrorCodeRefreshTokenRevoked  ErrorCode = "refresh_token_revoked"
 
-	ErrorCodeNoAuthorization ErrorCode = "no_authorization"
-	ErrorCodeBadJWT          ErrorCode = "bad_jwt"
+	ErrorCodeNoAuthorization   ErrorCode = "no_authorization"
+	ErrorCodeInvalidServiceKey ErrorCode = "invalid_service_key"
+	ErrorCodeBadJWT            ErrorCode = "bad_jwt"
 
 	ErrorCodeInvalidLogoutScope ErrorCode = "invalid_logout_scope"
 )
