@@ -14,6 +14,7 @@ const (
 	ErrorCodeMissingField    ErrorCode = "missing_field"
 	ErrorCodeInvalidField    ErrorCode = "invalid_field"
 	ErrorCodeInvalidUsername ErrorCode = "invalid_username"
+	ErrorCodeInvalidQuery    ErrorCode = "invalid_query"
 
 	ErrorCodeInvalidCredentials ErrorCode = "invalid_credentials"
 

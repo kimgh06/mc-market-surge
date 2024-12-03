@@ -64,6 +64,7 @@ func (a *SurgeAPI) createRouter() *SurgeAPIRouter {
 		})
 
 		router.Get("/username/{username}", a.EndpointUsername)
+		router.Get("/usernames", a.EndpointUsernames)
 	})
 
 	totalRouteNodes, totalRouteEndpoints := router.CountNodes()

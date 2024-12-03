@@ -39,3 +39,8 @@ GET http://localhost:4918/v1/external
 
 ### Check if username is available
 GET http://localhost:4918/v1/username/testusera
+
+### Resolve Usernames
+POST http://localhost:4918/v1/usernames
+Content-Type: application/json
+

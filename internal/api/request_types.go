@@ -15,3 +15,5 @@ type SignUpWithCredentialsRequest struct {
 		Birthdate *time.Time `json:"birthdate"`
 	}
 }
+
+type ResolveUsernamesRequest []string
