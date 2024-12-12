@@ -28,7 +28,7 @@ func (a *SurgeAPI) createRouter() *SurgeAPIRouter {
 		logger.Infoln("Enabled request logging")
 	}
 
-	router.Get("/health", a.EndpointHealth)
+	router.Get("/configuration", a.EndpointConfiguration)
 	router.Get("/.well-known/jwks.json", a.EndpointJwks)
 
 	router.Route("/v1", func(router *SurgeAPIRouter) {

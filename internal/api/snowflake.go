@@ -8,8 +8,10 @@ import (
 	"time"
 )
 
+var SnowflakeStartTime = time.Date(2024, 11, 0, 0, 0, 0, 0, time.UTC)
+
 func InitSnowflake(config *conf.SurgeSnowflakeConfigurations) {
-	startTime := time.Date(2024, 11, 0, 0, 0, 0, 0, time.UTC)
+	startTime := SnowflakeStartTime
 	if config.StartTime != "" {
 		parsed, err := time.Parse(time.RFC3339, config.StartTime)
 		if err != nil {
