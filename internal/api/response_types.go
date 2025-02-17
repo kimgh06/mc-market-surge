@@ -1,12 +1,13 @@
 package api
 
 import (
-	"github.com/lestrrat-go/jwx/v2/jwk"
 	"net/url"
 	"strconv"
 	"surge/internal/schema"
 	"surge/internal/storage"
 	"time"
+
+	"github.com/lestrrat-go/jwx/v2/jwk"
 )
 
 // AccessTokenResponse represents an OAuth2 success response
@@ -30,7 +31,7 @@ func (r *AccessTokenResponse) MakeRedirectUrl(redirectURL string, extraParams ur
 }
 
 type UserResponse struct {
-	ID uint64 `json:"id"`
+	ID string `json:"id"`
 
 	Email    *string `json:"email"`
 	Username *string `json:"username"`
@@ -42,7 +43,7 @@ type UserResponse struct {
 
 func NewUserResponse(user *schema.AuthUser) *UserResponse {
 	return &UserResponse{
-		ID:         uint64(user.ID),
+		ID:         strconv.FormatInt(user.ID, 10),
 		Email:      storage.NullStringToPointer(user.Email),
 		Username:   storage.NullStringToPointer(user.Username),
 		CreatedAt:  user.CreatedAt,

@@ -56,7 +56,12 @@ func NullTimeToPointer(t sql.NullTime) *time.Time {
 	return nil
 }
 
-func NullableToPointer[T any](container sql.Null[T]) *T {
+type Null[T any] struct {
+	Valid bool
+	V     T
+}
+
+func NullableToPointer[T any](container Null[T]) *T {
 	if container.Valid {
 		return &container.V
 	}
