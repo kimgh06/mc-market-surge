@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  surge:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "7578:7578"
+    environment:
+      - PORT=7578
+    restart: unless-stopped
