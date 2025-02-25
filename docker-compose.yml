@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: surge_development
     ports:
-      - "7578:7578" # 외부 접근 가능하도록 변경
+      - "6432:6432" # 외부 접근 가능하도록 변경
     volumes:
       - surge-postgres-data:/var/lib/postgresql/data # 올바른 데이터 경로
     networks:
@@ -27,6 +27,8 @@ services:
     command: ["./surge"] # 실행 명령 수정
     networks:
       - surge-network
+    ports:
+      - "7578:7578" # 외부 접근 가능하도록 변경
     depends_on:
       - surge-postgres # Postgres가 먼저 실행되도록 설정
     restart: unless-stopped # 자동 재시작
