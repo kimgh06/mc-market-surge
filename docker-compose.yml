@@ -9,4 +9,7 @@ services:
       - "7578:7578"
     env_file:
       - .env
+    volumes:
+      - ./migrations:/app/migrations # 마이그레이션 폴더 공유
+      - ./.env:/app/.env # .env 파일 공유 (필요한 경우)
     restart: unless-stopped

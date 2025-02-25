@@ -15,7 +15,8 @@ RUN go build -o surge .
 
 # 배포용 디렉토리 준비
 WORKDIR /dist
-RUN cp /build/surge .
+RUN cp /build/surge . 
+RUN mkdir -p /dist/migrations && cp -r /build/migrations /dist/migrations
 
 # 2️⃣ 실행 스테이지
 FROM alpine AS runtime
@@ -25,7 +26,7 @@ WORKDIR /app
 
 # 실행 파일 및 스키마 복사
 COPY --from=builder /dist/surge .
-COPY schema ./schema
+COPY --from=builder /dist/migrations ./migrations
 
 # 실행 파일 권한 설정
 RUN chmod +x ./surge
