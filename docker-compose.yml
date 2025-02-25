@@ -1,15 +1,39 @@
 version: "3.8"
 
 services:
-  surge:
-    build:
-      context: .
-      dockerfile: Dockerfile
+  surge-postgres:
+    image: postgres:15
+    container_name: surge-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: surge_development
     ports:
-      - "7578:7578"
+      - "7578:7578" # 외부 접근 가능하도록 변경
+    volumes:
+      - surge-postgres-data:/var/lib/postgresql/data # 올바른 데이터 경로
+    networks:
+      - surge-network
+    restart: unless-stopped # 자동 재시작
+
+  surge-core:
+    container_name: surge-core
+    build:
+      context: ./
+      dockerfile: development.Dockerfile
     env_file:
       - .env
-    volumes:
-      - ./migrations:/app/migrations # 마이그레이션 폴더 공유
-      - ./.env:/app/.env # .env 파일 공유 (필요한 경우)
-    restart: unless-stopped
+      - .env.docker
+    command: ["./surge"] # 실행 명령 수정
+    networks:
+      - surge-network
+    depends_on:
+      - surge-postgres # Postgres가 먼저 실행되도록 설정
+    restart: unless-stopped # 자동 재시작
+
+volumes:
+  surge-postgres-data:
+
+networks:
+  surge-network:
+    driver: bridge
