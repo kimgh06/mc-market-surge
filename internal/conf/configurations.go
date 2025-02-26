@@ -2,13 +2,14 @@ package conf
 
 import (
 	"errors"
+	"surge/internal/utilities"
+
 	"github.com/gobwas/glob"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
 	"github.com/lestrrat-go/jwx/v2/jwk"
 	"github.com/sirupsen/logrus"
-	"surge/internal/utilities"
 )
 
 type SurgeDatabaseConfigurations struct {
@@ -69,7 +70,7 @@ type SurgeConfigurations struct {
 	ServiceKey SurgeServiceKeyConfigurations `split_words:"true"`
 
 	ServiceURL string `required:"true" split_words:"true"`
-	Host       string `default:"0.0.0.0:3000"`
+	Host       string `default:"0.0.0.0:7578"`
 
 	URIAllowListMap map[string]glob.Glob
 	URIAllowList    []string `envconfig:"surge_uri_allow_list" split_words:"true"`
