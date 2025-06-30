@@ -70,7 +70,7 @@ type SurgeConfigurations struct {
 	ServiceKey SurgeServiceKeyConfigurations `split_words:"true"`
 
 	ServiceURL string `required:"true" split_words:"true"`
-	Host       string `default:"0.0.0.0:7578"`
+	Host       string `default:"0.0.0.0:3000"`
 
 	URIAllowListMap map[string]glob.Glob
 	URIAllowList    []string `envconfig:"surge_uri_allow_list" split_words:"true"`
